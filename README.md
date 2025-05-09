@@ -2,14 +2,27 @@
 
 ## 📄 Program Description
 
-This program provides an automated solution for Linux system administrators to add multiple users efficiently using a structured input file. Instead of manually running multiple commands like `adduser`, `passwd`, and `usermod`, this Python script streamlines the entire process, ensuring consistency and reducing the chance of human error.
+This Python script automates the creation of Linux user accounts and group assignments based on structured input from a file. It is designed for system administrators or students in INET4031 to efficiently manage bulk user creation while maintaining control over password assignment and group membership.
 
-Normally, administrators would use commands such as:
-- `adduser username`
-- Provide password and additional user details (Full Name, Room Number, etc.)
-- `usermod -aG groupname username` to assign group membership
+📁 Files Included
+create-users.py — Main Python script for processing and creating users.
 
-This script automates all of those actions using Python's `subprocess` module to call the same commands programmatically.
+create-users.input — Input file containing user data in the format:
+
+makefile
+Copy code
+username:password:last_name:first_name:group1,group2
+
+🔧 Features
+Reads user data from standard input.
+
+Skips invalid or commented lines.
+
+Creates users with home directories and optional group assignments.
+
+Sets user passwords.
+
+Adds users to one or more groups.
 
 ---
 
@@ -42,8 +55,47 @@ Each line in the input file should follow this format:
 
 ---
 
-### 🖥️ Command Execution
+🧪 Dry Run Instructions
+To test the script without modifying your system:
 
-1. Ensure the script is executable:
-   ```bash
-   chmod +x create-users.py
+Comment out the 3 os.system(cmd) lines in the script.
+
+Run:
+
+bash
+Copy code
+./create-users.py < create-users.input
+This will print the commands that would have been run, without actually making changes.
+
+✅ Execution Instructions (Live Run)
+⚠️ Only perform these steps once the dry run is successful.
+
+Make the script executable:
+
+bash
+Copy code
+chmod +x create-users.py
+Run the script with elevated permissions:
+
+bash
+Copy code
+sudo ./create-users.py < create-users.input
+
+---
+
+📌 Notes
+Lines in create-users.input starting with # or missing any of the 5 required fields are skipped.
+
+Input lines with - in the group field mean no groups should be assigned.
+
+Groups will be created if they do not already exist (by default behavior of adduser).
+
+---
+
+🕵️‍♂️ Verification
+To verify user and group creation:
+
+bash
+Copy code
+grep user0 /etc/passwd    # Shows user account details
+grep user0 /etc/group     # Shows group memberships
